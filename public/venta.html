@@ -1,0 +1,402 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SmartPlanet - Ventas</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --card: rgba(255, 255, 255, 0.08);
+        --card2: rgba(255, 255, 255, 0.06);
+        --text: #e5e7eb;
+        --muted: rgba(229, 231, 235, 0.7);
+        --line: rgba(255, 255, 255, 0.12);
+        --accent: #60a5fa;
+        --good: #22c55e;
+        --danger: #ef4444;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color: var(--text);
+        background: radial-gradient(1200px 700px at 20% 0%, #132047 0%, transparent 60%),
+          radial-gradient(900px 600px at 90% 20%, #0b4a3c 0%, transparent 55%), var(--bg);
+      }
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 18px 14px 40px;
+      }
+      .row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 14px;
+        background: linear-gradient(180deg, var(--card) 0%, var(--card2) 100%);
+        backdrop-filter: blur(10px);
+        flex: 1;
+        min-width: 320px;
+      }
+      h2 {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        color: rgba(229, 231, 235, 0.92);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 8px;
+        text-align: left;
+      }
+      input,
+      select,
+      button {
+        padding: 8px;
+        font-size: 14px;
+      }
+      input,
+      select {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.22);
+        color: var(--text);
+        outline: none;
+      }
+      button {
+        cursor: pointer;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        font-weight: 700;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .totals {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .totals div {
+        display: flex;
+        justify-content: space-between;
+      }
+      .nav {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .nav a {
+        text-decoration: none;
+        color: var(--text);
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-weight: 700;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .brand img {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      h1 {
+        margin: 0;
+        font-size: 18px;
+        line-height: 1.1;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .btnPrimary {
+        border-color: rgba(96, 165, 250, 0.5);
+        background: rgba(96, 165, 250, 0.16);
+      }
+      .btnGood {
+        border-color: rgba(34, 197, 94, 0.5);
+        background: rgba(34, 197, 94, 0.14);
+      }
+      .btnDanger {
+        border-color: rgba(239, 68, 68, 0.5);
+        background: rgba(239, 68, 68, 0.12);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.06);
+        font-size: 12px;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand">
+          <img src="logo.png" alt="SmartPlanet" />
+          <div>
+            <h1>SmartPlanet POS</h1>
+            <div class="subtitle">Ventas · Accesorios · Papelería</div>
+          </div>
+        </div>
+        <div class="nav">
+          <a href="/index.html">← Reparaciones</a>
+        </div>
+      </div>
+
+    <div class="row">
+      <div class="card">
+        <h2>Catálogo (rápido)</h2>
+        <div class="muted">Agrega productos y luego selecciónalos para vender. El stock se descuenta al cobrar.</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px">
+          <input id="p_sku" placeholder="SKU (opcional)" />
+          <input id="p_categoria" placeholder="Categoría (ej: Cables)" />
+          <input id="p_nombre" placeholder="Nombre" />
+          <input id="p_precio" placeholder="Precio" inputmode="decimal" />
+          <input id="p_stock" placeholder="Stock" inputmode="decimal" />
+          <button class="btnPrimary" id="btnAgregarProd">Agregar producto</button>
+        </div>
+        <hr style="margin: 12px 0" />
+        <input id="filtroProd" placeholder="Buscar producto..." style="width: 100%" />
+        <div style="overflow: auto; max-height: 360px; margin-top: 8px">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tablaProd"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Venta</h2>
+        <div class="muted" style="margin-bottom: 10px">Selecciona productos, ajusta cantidades y cobra.</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+          <input id="v_cliente" placeholder="Cliente (opcional)" />
+          <select id="v_metodo">
+            <option value="EFECTIVO" selected>EFECTIVO</option>
+            <option value="TARJETA">TARJETA</option>
+            <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+          </select>
+        </div>
+
+        <div style="overflow: auto; max-height: 260px; margin-top: 12px">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Cant.</th>
+                <th>Precio</th>
+                <th>Sub</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="carrito"></tbody>
+          </table>
+        </div>
+
+        <div class="totals">
+          <div><span>Total</span><span class="pill" id="v_total">$0.00</span></div>
+          <div><span>Pago</span><input id="v_pago" inputmode="decimal" value="0" style="width: 140px; text-align: right" /></div>
+          <div><span>Cambio</span><span class="pill" id="v_cambio">$0.00</span></div>
+          <div><span></span><button class="btnGood" id="btnCobrar">Cobrar e imprimir</button></div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <script>
+      let productos = [];
+      let cart = [];
+
+      const elTabla = document.getElementById("tablaProd");
+      const elFiltro = document.getElementById("filtroProd");
+      const elCarrito = document.getElementById("carrito");
+      const elTotal = document.getElementById("v_total");
+      const elPago = document.getElementById("v_pago");
+      const elCambio = document.getElementById("v_cambio");
+
+      function money(n) {
+        const v = Number(n);
+        if (!Number.isFinite(v)) return "$0.00";
+        return "$" + v.toFixed(2);
+      }
+
+      function recalc() {
+        const total = cart.reduce((a, it) => a + it.precio * it.cantidad, 0);
+        elTotal.textContent = money(total);
+        const pago = Number(elPago.value);
+        const cambio = Number.isFinite(pago) ? pago - total : 0;
+        elCambio.textContent = money(Math.max(0, cambio));
+      }
+
+      function renderProductos() {
+        const q = (elFiltro.value || "").toLowerCase().trim();
+        const list = productos.filter(
+          (p) =>
+            (p.nombre || "").toLowerCase().includes(q) ||
+            (p.categoria || "").toLowerCase().includes(q) ||
+            (p.sku || "").toLowerCase().includes(q),
+        );
+
+        elTabla.innerHTML = "";
+        list.forEach((p) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>
+              <b>${p.nombre}</b><br/>
+              <span class="muted">${p.categoria || ""} ${p.sku ? "· " + p.sku : ""}</span>
+            </td>
+            <td>${money(p.precio)}</td>
+            <td>${Number(p.stock).toFixed(2)}</td>
+            <td><button class="btnPrimary" onclick="addToCart(${p.id})">+ Agregar</button></td>
+          `;
+          elTabla.appendChild(tr);
+        });
+      }
+
+      function renderCart() {
+        elCarrito.innerHTML = "";
+        cart.forEach((it, idx) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td><b>${it.nombre}</b><br/><span class="muted">${it.sku || ""}</span></td>
+            <td><input inputmode="decimal" value="${it.cantidad}" style="width:70px" onchange="setQty(${idx}, this.value)" /></td>
+            <td>${money(it.precio)}</td>
+            <td>${money(it.precio * it.cantidad)}</td>
+            <td><button class="btnDanger" onclick="removeItem(${idx})">Quitar</button></td>
+          `;
+          elCarrito.appendChild(tr);
+        });
+        recalc();
+      }
+
+      window.addToCart = (id) => {
+        const p = productos.find((x) => x.id === id);
+        if (!p) return;
+        const existing = cart.find((x) => x.producto_id === id);
+        if (existing) existing.cantidad += 1;
+        else
+          cart.push({
+            producto_id: p.id,
+            sku: p.sku,
+            nombre: p.nombre,
+            precio: Number(p.precio),
+            cantidad: 1,
+          });
+        renderCart();
+      };
+
+      window.setQty = (idx, v) => {
+        const n = Number(String(v).replace(",", "."));
+        if (!Number.isFinite(n) || n <= 0) return renderCart();
+        cart[idx].cantidad = n;
+        renderCart();
+      };
+
+      window.removeItem = (idx) => {
+        cart.splice(idx, 1);
+        renderCart();
+      };
+
+      async function loadProductos() {
+        const res = await fetch("/productos");
+        const data = await res.json();
+        if (!data || data.ok === false) throw new Error(data?.error || "No se pudo cargar productos");
+        productos = data.productos || [];
+        renderProductos();
+      }
+
+      elFiltro.addEventListener("input", renderProductos);
+      elPago.addEventListener("input", recalc);
+
+      document.getElementById("btnAgregarProd").addEventListener("click", async () => {
+        const sku = document.getElementById("p_sku").value.trim();
+        const categoria = document.getElementById("p_categoria").value.trim();
+        const nombre = document.getElementById("p_nombre").value.trim();
+        const precio = document.getElementById("p_precio").value.trim();
+        const stock = document.getElementById("p_stock").value.trim();
+
+        const res = await fetch("/productos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sku, categoria, nombre, precio, stock }),
+        });
+        const data = await res.json();
+        if (!data || data.ok === false) return alert(data?.error || "No se pudo agregar");
+        document.getElementById("p_sku").value = "";
+        document.getElementById("p_categoria").value = "";
+        document.getElementById("p_nombre").value = "";
+        document.getElementById("p_precio").value = "";
+        document.getElementById("p_stock").value = "";
+        await loadProductos();
+      });
+
+      document.getElementById("btnCobrar").addEventListener("click", async () => {
+        if (cart.length === 0) return alert("Agrega productos");
+        const cliente = document.getElementById("v_cliente").value.trim();
+        const metodo_pago = document.getElementById("v_metodo").value;
+        const pago = Number(String(elPago.value || "0").replace(",", "."));
+        if (!Number.isFinite(pago)) return alert("Pago inválido");
+
+        const res = await fetch("/venta", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cliente, metodo_pago, pago, items: cart }),
+        });
+        const data = await res.json();
+        if (!data || data.ok === false) return alert(data?.error || "No se pudo cobrar");
+
+        window.open(`/ticket-venta.html?id=${encodeURIComponent(data.venta_id)}`, "_blank");
+        cart = [];
+        elPago.value = "0";
+        renderCart();
+        await loadProductos();
+      });
+
+      loadProductos().catch((e) => alert(e.message || "Error"));
+    </script>
+  </body>
+</html>

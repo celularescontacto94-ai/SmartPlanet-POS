@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Ticket Venta - SmartPlanet</title>
+    <style>
+      body {
+        font-family: monospace;
+        width: 280px;
+        margin: auto;
+        font-size: 12px;
+      }
+      .center {
+        text-align: center;
+      }
+      .bold {
+        font-weight: bold;
+      }
+      hr {
+        border-top: 1px dashed black;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+      }
+      @media print {
+        body {
+          width: 58mm;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="center" style="margin-top: 8px; margin-bottom: 6px">
+      <img src="logo.png" width="120" />
+    </div>
+    <div class="center bold">SMARTPLANET</div>
+    <div class="center">Venta</div>
+
+    <hr />
+
+    <p><b>Folio:</b> <span id="folio"></span></p>
+    <p><b>Fecha:</b> <span id="fecha"></span></p>
+    <p><b>Cliente:</b> <span id="cliente"></span></p>
+    <p><b>Método:</b> <span id="metodo"></span></p>
+
+    <hr />
+
+    <div id="items"></div>
+
+    <hr />
+
+    <div class="row"><span>Total:</span><span id="total"></span></div>
+    <div class="row"><span>Pago:</span><span id="pago"></span></div>
+    <div class="row"><span>Cambio:</span><span id="cambio"></span></div>
+
+    <hr />
+    <p class="center bold">GRACIAS POR SU COMPRA</p>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+
+      function money(v) {
+        const n = Number(v);
+        if (!Number.isFinite(n)) return "$0.00";
+        return "$" + n.toFixed(2);
+      }
+
+      async function main() {
+        const id = params.get("id");
+        if (!id) throw new Error("Falta id de venta");
+
+        const res = await fetch(`/venta/${encodeURIComponent(id)}`);
+        const data = await res.json();
+        if (!data || data.ok === false) throw new Error(data?.error || "No se pudo cargar");
+
+        const v = data.venta;
+        document.getElementById("folio").textContent = v.folio || "";
+        document.getElementById("fecha").textContent = v.fecha || "";
+        document.getElementById("cliente").textContent = v.cliente || "N/A";
+        document.getElementById("metodo").textContent = v.metodo_pago || "N/A";
+
+        const cont = document.getElementById("items");
+        cont.innerHTML = "";
+        (data.items || []).forEach((it) => {
+          const div = document.createElement("div");
+          div.innerHTML = `
+            <div class="row">
+              <span>${it.nombre} x${it.cantidad}</span>
+              <span>${money(it.subtotal)}</span>
+            </div>
+          `;
+          cont.appendChild(div);
+        });
+
+        document.getElementById("total").textContent = money(v.total);
+        document.getElementById("pago").textContent = money(v.pago);
+        document.getElementById("cambio").textContent = money(v.cambio);
+
+        setTimeout(() => window.print(), 200);
+      }
+
+      main().catch((e) => alert(e.message || "Error"));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Ticket SmartPlanet</title>
+    <style>
+      body {
+        font-family: monospace;
+        width: 280px;
+        margin: auto;
+        font-size: 12px;
+      }
+
+      .center {
+        text-align: center;
+      }
+
+      .bold {
+        font-weight: bold;
+      }
+
+      hr {
+        border-top: 1px dashed black;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      @media print {
+        body {
+          width: 58mm;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="center" style="margin-top: 8px; margin-bottom: 6px">
+      <img src="logo.png" width="120" />
+    </div>
+    <div class="center bold">SMARTPLANET</div>
+
+    <div class="center">Reparación & Accesorios</div>
+
+    <hr />
+
+    <p><b>Folio:</b> <span id="folio"></span></p>
+    <p><b>Fecha:</b> <span id="fecha"></span></p>
+
+    <hr />
+
+    <p class="bold">DATOS DEL CLIENTE</p>
+    <p><span id="cliente"></span></p>
+    <p>Correo: <span id="correo"></span></p>
+    <p>Tel: <span id="telefono"></span></p>
+    <p>Domicilio: <span id="domicilio"></span></p>
+
+    <hr />
+
+    <p class="bold">EQUIPO</p>
+    <p><span id="equipo"></span></p>
+    <p>IMEI: <span id="imei"></span></p>
+    <p>Clave: <span id="pin"></span></p>
+    <p>Falla: <span id="falla"></span></p>
+    <p>Notas: <span id="notas"></span></p>
+
+    <hr />
+
+    <p class="bold">PAGO</p>
+
+    <div class="row">
+      <span>Precio:</span>
+      <span id="precio"></span>
+    </div>
+
+    <div class="row" id="row_descuento" style="display:none">
+      <span>Descuento:</span>
+      <span id="descuento"></span>
+    </div>
+
+    <div class="row" id="row_precio_final" style="display:none">
+      <span>Precio final:</span>
+      <span id="precio_final"></span>
+    </div>
+
+    <div class="row">
+      <span>Anticipo:</span>
+      <span id="anticipo"></span>
+    </div>
+
+    <hr />
+
+    <p class="center bold">GRACIAS POR SU CONFIANZA</p>
+
+    <hr />
+
+    <p style="font-size: 10px">
+      - No nos hacemos responsables por equipos mojados o manipulados
+      previamente<br />
+      - Garantía de 30 días en reparación<br />
+      - No incluye golpes, humedad o mal uso<br />
+      - Equipos no recogidos en 30 días pueden ser reciclados
+    </p>
+
+    <hr />
+
+    <p class="center">SmartPlanet 🚀</p>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+
+      function setText(id, value) {
+        document.getElementById(id).textContent =
+          value === null || value === undefined || value === "" ? "N/A" : String(value);
+      }
+
+      function money(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return String(value ?? "N/A");
+        return "$" + n.toFixed(2);
+      }
+
+      async function cargarPorId(id) {
+        const res = await fetch(`/nota/${encodeURIComponent(id)}`);
+        const data = await res.json();
+        if (!data || data.ok === false) throw new Error(data?.error || "No se pudo cargar la nota");
+        return data.nota;
+      }
+
+      async function main() {
+        const id = params.get("id");
+
+        if (id) {
+          const nota = await cargarPorId(id);
+          setText("folio", nota.folio);
+          setText("fecha", nota.fecha_ingreso);
+          setText("cliente", nota.nombre_cliente);
+          setText("telefono", nota.telefono);
+          setText("correo", nota.correo);
+          setText("domicilio", nota.domicilio);
+          setText("equipo", nota.equipo);
+          setText("imei", nota.imei);
+          setText("pin", nota.pin);
+          setText("falla", nota.falla);
+          setText("notas", nota.notas);
+          setText("precio", money(nota.precio));
+          const descTipo = (nota.descuento_tipo || "").toUpperCase();
+          if (descTipo) {
+            document.getElementById("row_descuento").style.display = "flex";
+            const val = Number(nota.descuento_valor);
+            const descTxt =
+              descTipo === "PORCENTAJE" && Number.isFinite(val) ? val.toFixed(0) + "%" : money(nota.descuento_valor);
+            setText("descuento", descTxt);
+          }
+          if (nota.precio_final !== null && nota.precio_final !== undefined && nota.precio_final !== "") {
+            document.getElementById("row_precio_final").style.display = "flex";
+            setText("precio_final", money(nota.precio_final));
+          }
+          setText("anticipo", money(nota.anticipo));
+        } else {
+          // Compatibilidad por si abres tickets viejos con query params
+          setText("folio", params.get("folio"));
+          setText("fecha", params.get("fecha"));
+          setText("cliente", params.get("cliente"));
+          setText("telefono", params.get("telefono"));
+          setText("correo", params.get("correo"));
+          setText("domicilio", "");
+          setText("equipo", params.get("equipo"));
+          setText("imei", "");
+          setText("pin", "");
+          setText("falla", params.get("falla"));
+          setText("notas", "");
+          setText("precio", "$" + (params.get("precio") ?? ""));
+          // compat no soporta descuento
+          setText("anticipo", "$" + (params.get("anticipo") ?? ""));
+        }
+
+        // imprimir automático (espera a que pinte)
+        setTimeout(() => window.print(), 200);
+      }
+
+      main().catch((err) => {
+        alert(err?.message || "Error al cargar el ticket");
+      });
+    </script>
+  </body>
+</html>
